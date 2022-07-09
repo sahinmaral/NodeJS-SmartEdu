@@ -23,9 +23,17 @@ const CourseSchema = new Schema({
     type:String,
     unique:true,
     slug: "name"
+  },
+  category:{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:'Category'
+  },
+  user:{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:'User'
   }
 });
 
-const Course = mongoose.model('course', CourseSchema);
+const Course = mongoose.model('Course', CourseSchema);
 
 module.exports = Course;

@@ -19,10 +19,10 @@
 						</div>
 						<div class="post-content">
 							<div class="post-date">
-								<span class="day"><%= course.createdAt.getDay() %></span>
-								<span class="month"><%= ["January", "February", "March", "April", "May", "June",
-									"July", "August", "September", "October", "November", "December"
-								][course.createdAt.getMonth()] %></span>
+								<form action="/courses/enroll" method="POST">
+									<input type="hidden" name="course_id" value="<%= course._id %>">
+									<button class="btn btn-lg btn-warning rounded-0 text-white">Enroll Course</button>
+								</form>
 							</div>
 							<div class="meta-info-blog">
 								<span><i class="fa fa-calendar"></i> <a href="#"><%= course.createdAtStr %></a> </span>
@@ -38,21 +38,12 @@
 						</div>
 					</div>
 					
-					<div class="blog-author">
+					<div class="blog-author" style="height:130px;">
 						<div class="author-bio">
-							<h3 class="author_name"><a href="#">Tom Jobs</a></h3>
-							<h5>CEO at <a href="#">SmartEDU</a></h5>
-							<p class="author_det">
-								Lorem ipsum dolor sit amet, consectetur adip, sed do eiusmod tempor incididunt  ut aut reiciendise voluptat maiores alias consequaturs aut perferendis doloribus omnis saperet docendi nec, eos ea alii molestiae aliquand.
-							</p>
+							<h3 class="author_name"><a href="#"><%= course.user.name %></a></h3>
 						</div>
 						<div class="author-desc">
 							<img src="/images/author.jpg" alt="about author">
-							<ul class="author-social">
-								<li><a href="#"><i class="fa fa-facebook"></i></a></li>
-								<li><a href="#"><i class="fa fa-twitter"></i></a></li>
-								<li><a href="#"><i class="fa fa-skype"></i></a></li>
-							</ul>
 						</div>
 					</div>
 					
@@ -71,12 +62,9 @@
 					<div class="widget-categories">
 						<h3 class="widget-title">Categories</h3>
 						<ul>
-							<li><a href="#">Political Science</a></li>
-							<li><a href="#">Business Leaders Guide</a></li>
-							<li><a href="#">Become a Product Manage</a></li>
-							<li><a href="#">Language Education</a></li>
-							<li><a href="#">Micro Biology</a></li>
-							<li><a href="#">Social Media Management</a></li>
+							<% for(let i=0; i < categories.length; i++) { %>
+							<li><a href="/courses?categories=<%= categories[i].slug %>"><%= categories[i].name %></a></li>
+							<% } %>
 						</ul>
 					</div>
 				</div>
