@@ -14,13 +14,15 @@ exports.createCourse = async (req, res) => {
       user: req.session.userID,
     });
 
-    req.flash('success', `${req.body.name} has been created successfully`);
+    toastr.sendToastr(
+      req,
+      'success',
+      `${req.body.name} has been created successfully`
+    );
     return res.status(201).redirect('/users/dashboard');
   } catch (error) {
-    return res.status(501).json({
-      status: 'fail',
-      error,
-    });
+    toastr.sendToastr(req, 'error', JSON.stringify(error));
+    return res.status(501).redirect('/users/dashboard');
   }
 };
 
@@ -56,10 +58,8 @@ exports.getAllCourses = async (req, res) => {
       page_name: 'courses',
     });
   } catch (error) {
-    return res.status(501).json({
-      status: 'fail',
-      error: error,
-    });
+    toastr.sendToastr(req, 'error', JSON.stringify(error));
+    return res.status(501).redirect('/');
   }
 };
 
@@ -75,6 +75,7 @@ exports.getCourse = async (req, res) => {
       name: course.name,
       description: course.description,
       user: course.user,
+      slug: course.slug,
       createdAtStr: moment(course.createdAt).format('MMMM Do YYYY'),
     };
 
@@ -84,40 +85,50 @@ exports.getCourse = async (req, res) => {
       page_name: 'courses',
     });
   } catch (error) {
-    return res.status(501).json({
-      status: 'fail',
-      error,
-    });
+    toastr.sendToastr(req, 'error', JSON.stringify(error));
+    return res.status(501).redirect('/courses');
   }
 };
 
 exports.enrollCourse = async (req, res) => {
   try {
-    const user = await User.findById(req.session.userID);
-    await user.courses.push({ _id: req.body.course_id });
+    const user = await User.findById(req.session.userID).populate('courses');
+    const foundCourse = await Course.findById(req.body.id);
+
+    if (user.courses.some((course) => course.slug === foundCourse.slug))
+      throw 'This course has already enrolled';
+
+    await user.courses.push({ _id: req.body.id });
     await user.save();
 
+    toastr.sendToastr(
+      req,
+      'success',
+      `${foundCourse.name} has been enrolled successfully`
+    );
     res.status(201).redirect('/courses');
   } catch (error) {
-    return res.status(501).json({
-      status: 'fail',
-      error,
-    });
+    toastr.sendToastr(req, 'error', JSON.stringify(error));
+    return res.status(501).redirect(`/courses/${req.body.slug}`);
   }
 };
 
 exports.releaseCourse = async (req, res) => {
   try {
     const user = await User.findById(req.session.userID);
-    await user.courses.pull({ _id: req.body.course_id });
+    const foundCourse = await Course.findById(req.body.id);
+    await user.courses.pull({ _id: req.body.id });
     await user.save();
 
+    toastr.sendToastr(
+      req,
+      'success',
+      `${foundCourse.name} has been released successfully`
+    );
     res.status(201).redirect('/courses');
   } catch (error) {
-    return res.status(501).json({
-      status: 'fail',
-      error,
-    });
+    toastr.sendToastr(req, 'error', JSON.stringify(error));
+    return res.status(501).redirect('/users/dashboard');
   }
 };
 
@@ -156,10 +167,31 @@ exports.deleteCourse = async (req, res) => {
     );
     res.status(200).redirect('/users/dashboard');
   } catch (error) {
-
     await session.abortTransaction();
     session.endSession();
 
+    toastr.sendToastr(req, 'error', JSON.stringify(error));
+    res.status(500).redirect('/users/dashboard');
+  }
+};
+
+exports.updateCourse = async (req, res) => {
+  try {
+    const updatedCourse = await Course.findOne({ slug: req.body.slug });
+
+    updatedCourse.category = req.body.category;
+    updatedCourse.name = req.body.name;
+    updatedCourse.description = req.body.description;
+
+    await updatedCourse.save();
+
+    toastr.sendToastr(
+      req,
+      'success',
+      `${updatedCourse.name} has been updated successfully`
+    );
+    res.status(201).redirect('/users/dashboard');
+  } catch (error) {
     toastr.sendToastr(req, 'error', JSON.stringify(error));
     res.status(500).redirect('/users/dashboard');
   }

@@ -82,8 +82,10 @@
 											</div>
 											<div class="d-flex">
 												<div>
-													<button
-														class="btn btn-primary rounded-0 text-white"><span>UPDATE</span></button>
+													<button class="btn btn-primary rounded-0 text-white"
+														data-toggle="modal"
+														onclick="return showUpdateCourseModal('<%= JSON.stringify(courses[i]) %>')"
+														data-target="#updateCourseModal"><span>UPDATE</span></button>
 												</div>
 												<div class="ml-auto">
 													<button type="button" class="btn btn-danger rounded-0 text-white"
@@ -200,7 +202,7 @@
 											</div>
 											<div class="course-br">
 												<div class="course-title">
-													<h2><a href="course-single.html" title="">
+													<h2><a href="/courses/<%= user.courses[i].slug %>">
 															<%= user.courses[i].name %>
 														</a></h2>
 												</div>
@@ -218,7 +220,7 @@
 													</p>
 												</div>
 												<form method="POST" action="/courses/release">
-													<input type="hidden" name="course_id"
+													<input type="hidden" name="id"
 														value="<%= user.courses[i]._id %>">
 													<button
 														class="btn btn-lg btn-danger text-white"><span>RELEASE</span></button>
@@ -244,6 +246,18 @@
 								function showDeleteCourseModal(slug) {
 									document.getElementById('deleteCourseModal-deleteButton').href = `/courses/${slug}?_method=DELETE`
 								}
+
+								function showUpdateCourseModal(course) {
+									const parsedCourse = JSON.parse(course)
+									const updateCourseModal = document.getElementById('updateCourseModal')								
+									
+									updateCourseModal.getElementsByClassName('form-control')[0].value = parsedCourse.name
+									updateCourseModal.getElementsByClassName('form-control')[1].innerHTML = parsedCourse.description
+									updateCourseModal.getElementsByClassName('form-control')[2].value = parsedCourse.category
+
+									document.getElementById('updateCourseModalSlug').value = parsedCourse.slug					
+									document.getElementById('updateCourseModalForm').action = `/courses/${parsedCourse.slug}?_method=PUT`
+								}
 							</script>
 
 							<div class="modal fade" id="deleteCourseModal" tabindex="-1" role="dialog"
@@ -268,6 +282,63 @@
 										</div>
 									</div>
 								</div>
+							</div>
+
+							<div class="modal fade" id="updateCourseModal" tabindex="-1" role="dialog"
+								aria-labelledby="myModalLabel">
+								<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+									<div class="modal-content">
+										<div class="modal-body customer-box">
+											<!-- Tab panes -->
+											<div class="tab-content">
+												<div class="tab-pane active" id="Login">
+													<form method="POST" action="/courses" class="form-horizontal" id="updateCourseModalForm">
+														<input type="hidden" id="updateCourseModalSlug" name="slug">
+														<div class="form-group">
+															<div class="col-sm-12">
+																<input type="text"
+																	name="name" class="form-control"
+																	placeholder="Course Name">
+															</div>
+														</div>
+														<div class="form-group">
+															<div class="col-sm-12">
+																<textarea name="description" class="form-control"
+																	placeholder="Course Description"
+																	required></textarea>
+															</div>
+														</div>
+														<div class="form-group">
+															<div class="col-sm-12">
+																<select class="form-control" name="category">
+																	<% for (let i=0; i< categories.length; i++) { %>
+																		<option value="<%= categories[i]._id %>">
+																			<%= categories[i].name %>
+																		</option>
+																		<% } %>
+																</select>
+															</div>
+														</div>
+														<div class="row">
+															<div class="col-sm-10">
+																<button type="submit"
+																	class="btn btn-light btn-radius btn-brd grd1">
+																	Submit
+																</button>
+																<button type="submit"
+																	class="btn btn-light btn-radius btn-brd grd1"
+																	data-dismiss="modal" aria-hidden="true">
+																	Cancel
+																</button>
+															</div>
+														</div>
+													</form>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+
 							</div>
 
 	</body>

@@ -20,7 +20,8 @@
 						<div class="post-content">
 							<div class="post-date">
 								<form action="/courses/enroll" method="POST">
-									<input type="hidden" name="course_id" value="<%= course._id %>">
+									<input type="hidden" name="id" value="<%= course._id %>">
+									<input type="hidden" name="slug" value="<%= course.slug %>">									
 									<button class="btn btn-lg btn-warning rounded-0 text-white">Enroll Course</button>
 								</form>
 							</div>
@@ -28,7 +29,7 @@
 								<span><i class="fa fa-calendar"></i> <a href="#"><%= course.createdAtStr %></a> </span>
 							</div>
 							<div class="blog-title">
-								<h2><a href="#" title=""><%= course.name %></a></h2>
+								<h2><%= course.name %></h2>
 							</div>
 							<div class="blog-desc">
 								<blockquote class="default">
