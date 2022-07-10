@@ -48,7 +48,7 @@ exports.getDashboardPage = async (req, res) => {
   try {
     const user = await User.findById(req.session.userID).populate('courses');
     const categories = await Category.find();
-    const courses = await Course.find({ user: req.session.userID });
+    const courses = await Course.find({ user: req.session.userID }).sort('-createdAt');
 
     return res.status(200).render('dashboard', {
       page_name: 'dashboard',

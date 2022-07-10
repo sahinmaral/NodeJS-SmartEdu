@@ -1,4 +1,6 @@
 const moment = require('moment');
+
+const toastr = require('../helpers/toastr');
 const Course = require('../models/Course');
 const Category = require('../models/Category');
 const User = require('../models/User');
@@ -116,5 +118,49 @@ exports.releaseCourse = async (req, res) => {
       status: 'fail',
       error,
     });
+  }
+};
+
+exports.deleteCourse = async (req, res) => {
+  const session = await User.startSession();
+
+  try {
+    const foundCourse = await Course.findOne({ slug: req.params.slug });
+    const users = await User.find().populate('courses');
+    const usersHasCourse = users.filter((user) =>
+      user.courses.some((course) => course.slug === foundCourse.slug)
+    );
+
+    // After deleting this course of users that has got ,
+    // we might get error (like database) after this process
+
+    // Because of this kinda error , we have to start transaction
+    // and if any error will occur after first process , it has to revert
+    // first process
+    session.startTransaction();
+
+    for (let i = 0; i < usersHasCourse.length; i++) {
+      await usersHasCourse[i].courses.pull({ _id: foundCourse._id });
+      await usersHasCourse[i].save({ session: session });
+    }
+
+    await foundCourse.delete();
+
+    await session.commitTransaction();
+    session.endSession();
+
+    toastr.sendToastr(
+      req,
+      'success',
+      `${foundCourse.name} has been removed successfully`
+    );
+    res.status(200).redirect('/users/dashboard');
+  } catch (error) {
+
+    await session.abortTransaction();
+    session.endSession();
+
+    toastr.sendToastr(req, 'error', JSON.stringify(error));
+    res.status(500).redirect('/users/dashboard');
   }
 };
