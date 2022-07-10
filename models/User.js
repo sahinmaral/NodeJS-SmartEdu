@@ -22,6 +22,10 @@ const UserSchema = new Schema({
     enum: ['teacher', 'student', 'admin'],
     default: 'student',
   },
+  isBanned : {
+    type : Boolean,
+    default:false
+  },
   courses: [
     {
       type: mongoose.Schema.Types.ObjectId,

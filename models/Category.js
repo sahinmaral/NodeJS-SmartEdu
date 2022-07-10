@@ -10,6 +10,10 @@ const CategorySchema = new Schema({
     required: true,
     unique: true,
   },
+  isDisabled:{
+    type:Boolean,
+    default:false
+  },
   slug:{
     type:String,
     unique:true,
@@ -18,6 +22,6 @@ const CategorySchema = new Schema({
 });
 
 
-const Category = mongoose.model('categories',CategorySchema)
+const Category = mongoose.model('Category',CategorySchema)
 
 module.exports = Category

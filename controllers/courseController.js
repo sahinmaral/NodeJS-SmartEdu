@@ -27,6 +27,7 @@ exports.createCourse = async (req, res) => {
 };
 
 exports.getAllCourses = async (req, res) => {
+  
   try {
     let filter = {};
 
@@ -49,15 +50,21 @@ exports.getAllCourses = async (req, res) => {
         { category: filter.category },
         { name: { $regex: '.*' + filter.name + '.*', $options: 'i' } },
       ],
-    }).sort('-createdAt');
-    const categories = await Category.find();
+    }).populate('category').sort('-createdAt');
+    
+    const filteredCourses = courses.filter((element)=> {
+      if(!element.category.isDisabled) return element
+    })
+
+    const categories = await Category.find({isDisabled:false});
 
     return res.status(200).render('courses', {
-      courses: courses,
+      courses: filteredCourses,
       categories: categories,
       page_name: 'courses',
     });
   } catch (error) {
+    console.log(error)
     toastr.sendToastr(req, 'error', JSON.stringify(error));
     return res.status(501).redirect('/');
   }
@@ -68,7 +75,7 @@ exports.getCourse = async (req, res) => {
     const course = await Course.findOne({ slug: req.params.slug }).populate(
       'user'
     );
-    const categories = await Category.find();
+    const categories = await Category.find({isDisabled:false});
 
     let modifiedCourse = {
       _id: course._id,

@@ -14,7 +14,7 @@ const categoryRoute = require('./routes/categoryRoute');
 const userRoute = require('./routes/userRoute');
 
 const app = express();
-const port = 3000;
+
 
 // Connect db
 mongoose.connect(process.env.MONGODB_CONNECTION_STRING).then(() => {
@@ -66,6 +66,7 @@ app.use('/courses', courseRoute);
 app.use('/categories', categoryRoute);
 app.use('/users', userRoute);
 
+const port = process.env.PORT || 5000;
 app.listen(port, () => {
   console.log(`App listening on port ${port}`);
 });

@@ -11,5 +11,6 @@ router.route('/register').post([registerMiddleware,registerUserValidation], auth
 router.route('/login').post(authController.loginUser);
 router.route('/logout').get(authController.logoutUser);
 router.route('/dashboard').get(authMiddleware, authController.getDashboardPage);
+router.route('/toggleBanUser').put(authMiddleware, authController.toggleBanUser);
 
 module.exports = router;

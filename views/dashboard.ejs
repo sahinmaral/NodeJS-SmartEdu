@@ -19,7 +19,7 @@
 						<div class="row">
 							<div class="col-lg-12 text-center ">
 								<button class="btn btn-lg btn-warning rounded-0 text-white" href="#" data-toggle="modal"
-									data-target="#addCourse"><span>CREATE NEW
+									data-target="#addCourseModal"><span>CREATE NEW
 										COURSE</span></button>
 							</div>
 							<div class="col-lg-12 blog-post-single">
@@ -104,59 +104,9 @@
 					</div><!-- end container -->
 				</div>
 
-				<!-- ADD Modal -->
-				<div class="modal fade" id="addCourse" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-					<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-						<div class="modal-content">
-							<div class="modal-body customer-box">
-								<!-- Tab panes -->
-								<div class="tab-content">
-									<div class="tab-pane active" id="Login">
-										<form method="POST" action="/courses" class="form-horizontal">
-											<div class="form-group">
-												<div class="col-sm-12">
-													<input type="text" name="name" class="form-control"
-														placeholder="Course Name">
-												</div>
-											</div>
-											<div class="form-group">
-												<div class="col-sm-12">
-													<textarea rows="8" name="description" class="form-control"
-														placeholder="Course Description" required></textarea>
-												</div>
-											</div>
-											<div class="form-group">
-												<div class="col-sm-12">
-													<select class="form-control" name="category">
-														<% for (let i=0; i< categories.length; i++) { %>
-															<option value="<%= categories[i]._id %>">
-																<%= categories[i].name %>
-															</option>
-															<% } %>
-													</select>
-												</div>
-											</div>
-											<div class="row">
-												<div class="col-sm-10">
-													<button type="submit" class="btn btn-light btn-radius btn-brd grd1">
-														Submit
-													</button>
-													<button type="submit" class="btn btn-light btn-radius btn-brd grd1"
-														data-dismiss="modal" aria-hidden="true">
-														Cancel
-													</button>
-												</div>
-											</div>
-										</form>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-
 				<!-- end section -->
 				<% } if(user.role==='student' ) { %>
+
 					<!-- start section -->
 					<div class="all-title-box">
 						<div class="container text-center">
@@ -220,8 +170,7 @@
 													</p>
 												</div>
 												<form method="POST" action="/courses/release">
-													<input type="hidden" name="id"
-														value="<%= user.courses[i]._id %>">
+													<input type="hidden" name="id" value="<%= user.courses[i]._id %>">
 													<button
 														class="btn btn-lg btn-danger text-white"><span>RELEASE</span></button>
 												</form>
@@ -233,113 +182,326 @@
 						</div><!-- end container -->
 					</div>
 					<!-- end section -->
-					<% } %>
+					<% } if(user.role==='admin' ) { %>
 
-						<%- include('partials/_footer') -%>
+						<div class="all-title-box">
+							<div class="container text-center">
+								<h1>Dashboard
+									<span class="m_1">Admin</span>
+								</h1>
+							</div>
+						</div>
 
-							<!-- ALL JS FILES -->
-							<script src="/js/all.js"></script>
-							<!-- ALL PLUGINS -->
-							<script src="/js/custom.js"></script>
-
-							<script>
-								function showDeleteCourseModal(slug) {
-									document.getElementById('deleteCourseModal-deleteButton').href = `/courses/${slug}?_method=DELETE`
-								}
-
-								function showUpdateCourseModal(course) {
-									const parsedCourse = JSON.parse(course)
-									const updateCourseModal = document.getElementById('updateCourseModal')								
-									
-									updateCourseModal.getElementsByClassName('form-control')[0].value = parsedCourse.name
-									updateCourseModal.getElementsByClassName('form-control')[1].innerHTML = parsedCourse.description
-									updateCourseModal.getElementsByClassName('form-control')[2].value = parsedCourse.category
-
-									document.getElementById('updateCourseModalSlug').value = parsedCourse.slug					
-									document.getElementById('updateCourseModalForm').action = `/courses/${parsedCourse.slug}?_method=PUT`
-								}
-							</script>
-
-							<div class="modal fade" id="deleteCourseModal" tabindex="-1" role="dialog"
-								aria-labelledby="deleteCourseModalLabel" aria-hidden="true">
-								<div class="modal-dialog" role="document">
-									<div class="modal-content">
-										<div class="modal-header">
-											<h2 class="modal-title" id="deleteCourseModalLabel">Warning</h5>
-												<button type="button" class="close" data-dismiss="modal"
-													aria-label="Close">
-													<span aria-hidden="true">&times;</span>
-												</button>
+						<div id="overviews" class="section wb">
+							<div class="container">
+								<div class="row">
+									<div class="col-lg-12 blog-post-single">
+										<div class="blog-author">
+											<div class="author-bio">
+												<h3 class="author_name"><a href="#">
+														<%= user.name %>
+													</a></h3>
+												<h5>
+													<%= user.email %>
+												</h5>
+												<p class="author_det">
+													Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ea magni
+													nihil
+													quos soluta animi, asperiores aliquam et consequatur! Illo aut ab
+													dolore
+													temporibus aspernatur voluptatem rerum sit quis alias maxime quos,
+													consequatur ullam aliquid voluptate impedit odit placeat iure dicta
+													ducimus quia fugit ex. Nam sed esse consequatur iusto velit.
+												</p>
+											</div>
+											<div class="author-desc">
+												<img src="/images/author.jpg" alt="about author">
+											</div>
 										</div>
-										<div class="modal-body">
-											Are you sure to delete selected course ?
-										</div>
-										<div class="modal-footer">
-											<a href="#" id="deleteCourseModal-deleteButton"
-												class="btn btn-success">Yes</a>
-											<button type="button" class="btn btn-secondary"
-												data-dismiss="modal">Close</button>
+
+									</div><!-- end col -->
+								</div><!-- end row -->
+
+								<div class="row mt-5">
+									<div class="col-lg-12 blog-post-single my-4">
+										<h3 class="author_name text-center"> USERS
+										</h3>
+									</div><!-- end col -->
+									<table class="table">
+										<thead>
+											<tr>
+												<th scope="col">ID#</th>
+												<th scope="col">Email</th>
+												<th scope="col">Role</th>
+												<th scope="col">Processes</th>
+											</tr>
+										</thead>
+										<tbody>
+											<% for (let i=0; i< users.length; i++) { %>
+												<tr>
+													<th scope="row">
+														<%=users[i]._id %>
+													</th>
+													<td>
+														<%=users[i].email %>
+													</td>
+													<td>
+														<%=users[i].role %>
+													</td>
+													<td>
+
+														<form method="POST" action="/users/toggleBanUser?_method=PUT">
+															<input type="hidden" name="id" value="<%= users[i]._id %>">
+															<% if(users[i].isBanned) { %>
+																<button class="btn btn-success rounded-0 text-white">
+																	UNBAN
+																</button>
+																<% } else { %>
+																	<button class="btn btn-danger rounded-0 text-white">
+																		BAN
+																		<% } %>
+														</form>
+													</td>
+												</tr>
+												<% } %>
+										</tbody>
+									</table>
+								</div><!-- end row -->
+
+								<div class="row mt-5">
+									<div class="col-lg-12 blog-post-single my-4">
+										<h3 class="author_name text-center"> CATEGORIES
+										</h3>
+									</div><!-- end col -->
+									<table class="table">
+										<thead>
+											<tr>
+												<th scope="col">ID#</th>
+												<th scope="col">Name</th>
+												<th scope="col">Processes</th>
+											</tr>
+										</thead>
+										<tbody>
+											<% for (let i=0; i< categories.length; i++) { %>
+												<tr>
+													<th scope="row">
+														<%=categories[i]._id %>
+													</th>
+													<td>
+														<%=categories[i].name %>
+													</td>
+													<td>
+														<div class="d-flex">
+															<div>
+																<% if(!categories[i].isDisabled) { %>
+																<button class="btn btn-warning rounded-0 text-white"
+																	onclick="return showAddCourseModalAdmin('<%= categories[i]._id %>')"
+																	data-toggle="modal" data-target="#addCourseModal">
+																	ADD</button>
+																<% } %>
+															</div>
+															<div class="ml-2">
+																<form action="/categories/toggleDisable?_method=PUT"
+																	method="POST">
+																	<input type="hidden" name="id"
+																		value="<%= categories[i].id %>">
+
+																	<% if(categories[i].isDisabled) { %>
+																		<button
+																			class="btn btn-success rounded-0 text-white">
+																			ENABLE
+																		</button>
+																		<% } else { %>
+																			<button
+																				class="btn btn-danger rounded-0 text-white">
+																				DISABLE
+																				<% } %>
+																</form>
+
+															</div>
+														</div>
+													</td>
+												</tr>
+												<% } %>
+										</tbody>
+									</table>
+								</div>
+							</div><!-- end container -->
+						</div>
+						<% } %>
+
+
+
+
+							<%- include('partials/_footer') -%>
+
+								<!-- ALL JS FILES -->
+								<script src="/js/all.js"></script>
+								<!-- ALL PLUGINS -->
+								<script src="/js/custom.js"></script>
+
+								<script>
+									function showDeleteCourseModal(slug) {
+										document.getElementById('deleteCourseModal-deleteButton').href = `/courses/${slug}?_method=DELETE`
+									}
+
+									function showUpdateCourseModal(course) {
+										const parsedCourse = JSON.parse(course)
+										const updateCourseModal = document.getElementById('updateCourseModal')
+
+										updateCourseModal.getElementsByClassName('form-control')[0].value = parsedCourse.name
+										updateCourseModal.getElementsByClassName('form-control')[1].innerHTML = parsedCourse.description
+										updateCourseModal.getElementsByClassName('form-control')[2].value = parsedCourse.category
+
+										document.getElementById('updateCourseModalSlug').value = parsedCourse.slug
+										document.getElementById('updateCourseModalForm').action = `/courses/${parsedCourse.slug}?_method=PUT`
+									}
+
+									function showAddCourseModalAdmin(category_id) {
+										const updateCourseModal = document.getElementById('addCourseModal')
+										updateCourseModal.getElementsByClassName('form-control')[2].value = category_id
+									}
+								</script>
+
+								<div class="modal fade" id="deleteCourseModal" tabindex="-1" role="dialog"
+									aria-labelledby="deleteCourseModalLabel" aria-hidden="true">
+									<div class="modal-dialog" role="document">
+										<div class="modal-content">
+											<div class="modal-header">
+												<h2 class="modal-title" id="deleteCourseModalLabel">Warning</h5>
+													<button type="button" class="close" data-dismiss="modal"
+														aria-label="Close">
+														<span aria-hidden="true">&times;</span>
+													</button>
+											</div>
+											<div class="modal-body">
+												Are you sure to delete selected course ?
+											</div>
+											<div class="modal-footer">
+												<a href="#" id="deleteCourseModal-deleteButton"
+													class="btn btn-success">Yes</a>
+												<button type="button" class="btn btn-secondary"
+													data-dismiss="modal">Close</button>
+											</div>
 										</div>
 									</div>
 								</div>
-							</div>
 
-							<div class="modal fade" id="updateCourseModal" tabindex="-1" role="dialog"
-								aria-labelledby="myModalLabel">
-								<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-									<div class="modal-content">
-										<div class="modal-body customer-box">
-											<!-- Tab panes -->
-											<div class="tab-content">
-												<div class="tab-pane active" id="Login">
-													<form method="POST" action="/courses" class="form-horizontal" id="updateCourseModalForm">
-														<input type="hidden" id="updateCourseModalSlug" name="slug">
-														<div class="form-group">
-															<div class="col-sm-12">
-																<input type="text"
-																	name="name" class="form-control"
-																	placeholder="Course Name">
+								<div class="modal fade" id="updateCourseModal" tabindex="-1" role="dialog"
+									aria-labelledby="myModalLabel">
+									<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+										<div class="modal-content">
+											<div class="modal-body customer-box">
+												<!-- Tab panes -->
+												<div class="tab-content">
+													<div class="tab-pane active" id="Login">
+														<form method="POST" action="/courses" class="form-horizontal"
+															id="updateCourseModalForm">
+															<input type="hidden" id="updateCourseModalSlug" name="slug">
+															<div class="form-group">
+																<div class="col-sm-12">
+																	<input type="text" name="name" class="form-control"
+																		placeholder="Course Name">
+																</div>
 															</div>
-														</div>
-														<div class="form-group">
-															<div class="col-sm-12">
-																<textarea name="description" class="form-control"
-																	placeholder="Course Description"
-																	required></textarea>
+															<div class="form-group">
+																<div class="col-sm-12">
+																	<textarea name="description" class="form-control"
+																		placeholder="Course Description"
+																		required></textarea>
+																</div>
 															</div>
-														</div>
-														<div class="form-group">
-															<div class="col-sm-12">
-																<select class="form-control" name="category">
-																	<% for (let i=0; i< categories.length; i++) { %>
-																		<option value="<%= categories[i]._id %>">
-																			<%= categories[i].name %>
-																		</option>
-																		<% } %>
-																</select>
+															<div class="form-group">
+																<div class="col-sm-12">
+																	<select class="form-control" name="category">
+																		<% for (let i=0; i< categories.length; i++) { %>
+																			<option value="<%= categories[i]._id %>">
+																				<%= categories[i].name %>
+																			</option>
+																			<% } %>
+																	</select>
+																</div>
 															</div>
-														</div>
-														<div class="row">
-															<div class="col-sm-10">
-																<button type="submit"
-																	class="btn btn-light btn-radius btn-brd grd1">
-																	Submit
-																</button>
-																<button type="submit"
-																	class="btn btn-light btn-radius btn-brd grd1"
-																	data-dismiss="modal" aria-hidden="true">
-																	Cancel
-																</button>
+															<div class="row">
+																<div class="col-sm-10">
+																	<button type="submit"
+																		class="btn btn-light btn-radius btn-brd grd1">
+																		Submit
+																	</button>
+																	<button type="submit"
+																		class="btn btn-light btn-radius btn-brd grd1"
+																		data-dismiss="modal" aria-hidden="true">
+																		Cancel
+																	</button>
+																</div>
 															</div>
-														</div>
-													</form>
+														</form>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+
+								</div>
+
+								<div class="modal fade" id="addCourseModal" tabindex="-1" role="dialog"
+									aria-labelledby="myModalLabel">
+									<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+										<div class="modal-content">
+											<div class="modal-body customer-box">
+												<!-- Tab panes -->
+												<div class="tab-content">
+													<div class="tab-pane active" id="Login">
+														<form method="POST" action="/courses" class="form-horizontal">
+															<div class="form-group">
+																<div class="col-sm-12">
+																	<input type="text" name="name" class="form-control"
+																		placeholder="Course Name">
+																</div>
+															</div>
+															<div class="form-group">
+																<div class="col-sm-12">
+																	<textarea rows="8" name="description"
+																		class="form-control"
+																		placeholder="Course Description"
+																		required></textarea>
+																</div>
+															</div>
+															<div class="form-group">
+																<div class="col-sm-12">
+																	<select class="form-control" name="category">
+																		<% for (let i=0; i<
+																			categories.filter((category)=>{
+																			if(!category.isDisabled) return category
+																			}).length; i++) { %>
+																			<option value="<%= categories[i]._id %>">
+																				<%= categories[i].name %>
+																			</option>
+																			<% } %>
+																	</select>
+																</div>
+															</div>
+															<div class="row">
+																<div class="col-sm-10">
+																	<button type="submit"
+																		class="btn btn-light btn-radius btn-brd grd1">
+																		Submit
+																	</button>
+																	<button type="submit"
+																		class="btn btn-light btn-radius btn-brd grd1"
+																		data-dismiss="modal" aria-hidden="true">
+																		Cancel
+																	</button>
+																</div>
+															</div>
+														</form>
+													</div>
 												</div>
 											</div>
 										</div>
 									</div>
 								</div>
 
-							</div>
 
 	</body>
 
